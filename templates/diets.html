@@ -1,0 +1,936 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diets</title>
+    <style>
+        p{
+
+          color: rgba(2, 39, 57, 0.78);
+        }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: rgba(2, 39, 57, 0.78);
+        }
+        .button-group {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+
+      button {
+
+        padding: 20px 40px;
+        font-size: 15px;
+        position: relative;
+        background: transparent;
+        color: rgba(3, 60, 88, 0.78);
+        text-transform: uppercase;
+        border: 3px solid  rgba(3, 60, 88, 0.78);
+        cursor: pointer;
+        transition: all 0.7s;
+        overflow: hidden;
+        border-radius: 100px;
+          width: 150px;
+          height: 70px;
+
+      }
+        button:hover {
+          background-color:  rgba(145, 212, 245, 0.78);
+        }
+        .error-message {
+            color: rgba(3, 60, 88, 0.78);
+            text-align: center;
+        }
+        .flash-message {
+            color: rgba(3, 60, 88, 0.78);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+
+
+
+
+
+        .select-inputs {
+            margin-top: 20px;
+            text-align: center;
+            display: none;
+        }
+        .select-inputs input {
+            margin: 5px;
+            padding: 5px;
+            width: 150px;
+        }
+        .find-button {
+            margin-top: 20px;
+        }
+        .find-button-container {
+            text-align: center;
+        }
+        .find-based-on {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .search-container {
+            margin-top: 20px;
+            text-align: center;
+            display: none;
+        }
+        .search-input {
+            display: none;
+            margin: 10px 0;
+        }
+        .update-form {
+            margin-top: 20px;
+            text-align: center;
+            display: none;
+        }
+        .update-form input {
+            margin: 5px;
+            padding: 5px;
+            width: 150px;
+        }
+
+        .assign-form {
+            margin-top: 20px;
+            text-align: center;
+            display: none;
+        }
+        .assign-form input {
+            margin: 5px;
+            padding: 5px;
+            width: 150px;
+        }
+
+        .side-nav {
+    width: 100%;
+    height: 100px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding: 15px 30px;
+    background: rgba(206, 238, 253, 0.78);
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    transition: height 0.3s;
+    z-index: 1000;
+    overflow-x: hidden; /* Hide the horizontal scrollbar */
+}
+
+.side-nav:hover {
+    height: 120px;
+}
+
+.side-nav:hover ul li p {
+    max-height: 130px;
+}
+
+.side-nav:hover ul li img {
+    margin-bottom: 10px;
+}
+
+.side-nav:hover ul li {
+    justify-content: center;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: row;
+    margin: 0;
+    width: 100%;
+    overflow-x: scroll; /* Enable horizontal scrolling */
+    -ms-overflow-style: none;  /* Internet Explorer 10+ */
+    scrollbar-width: none;  /* Firefox */
+}
+
+ul::-webkit-scrollbar {
+    display: none;  /* Safari and Chrome */
+}
+
+ul li {
+    margin: 0 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-direction: column;
+}
+
+ul li img {
+    width: 30px;
+    margin-bottom: 0;
+    transition: margin-bottom 0.3s;
+}
+
+ul li p {
+    white-space: nowrap;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s;
+}
+
+ul a {
+    text-decoration: none;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .side-nav {
+        height: auto;
+        padding: 10px 20px;
+        flex-direction: row;
+    }
+
+    ul {
+        flex-direction: row;
+        align-items: center;
+        overflow-x: scroll; /* Enable horizontal scrolling on small screens */
+        white-space: nowrap; /* Ensure items do not wrap */
+    }
+
+    ul li {
+        margin: 15px;
+    }
+
+    .side-nav:hover {
+        height: auto;
+    }
+}
+
+
+
+        main {
+            margin-top: 150px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+.Insert{
+  padding-top: 20px;
+  align-items: center;
+
+}
+
+.Insert label {
+    width: 200px;
+    text-align: right;
+    color:  rgba(169, 217, 241, 0.78);
+  }
+.Insert input{
+  color:  rgba(3, 47, 69, 0.78);
+  border-radius: 12px;
+    outline: none;
+    background: rgba(198, 229, 244, 0.78);
+    border: 2px solid rgba(3, 47, 69, 0.78);
+      padding-top: 3px;
+  padding-bottom: 3px;
+ }
+.Insert input[type="text"] {
+    padding-left: 5px; /* Adjust the value as needed */
+  }
+.Insert button{
+    border: none;
+    background: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+}
+.Insert img{
+    width: 35px;
+  padding-left: 5px;
+  padding-bottom: 7px;
+}
+.input-group_first_row {
+    margin-bottom: 3px; /* Adjust the margin value as needed */
+  }
+.input-group_second_row{
+    padding-left: 40px;
+}
+
+.Search_label{
+  color: rgba(3, 47, 69, 0.78);
+    padding-left: 210px;
+
+}
+.header .Search_label ,
+.header .patient_p ,
+.header .patientImage  {
+    display: inline-block;
+  vertical-align: baseline;
+}
+.label-color {
+  color: rgba(169, 217, 241, 0.78);
+  background-color: rgba(169, 217, 241, 0.78);
+}
+
+</style>
+
+
+     <style>
+
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+
+
+      button:hover {
+        color: #000;
+      }
+      span {
+        transition: all 0.7s;
+        z-index: -1;
+      }
+
+      button .first {
+        content: "";
+        position: absolute;
+        right: 100%;
+        top: 0;
+        width: 5%;
+        height: 100%;
+        background: rgba(155, 213, 242, 0.78);
+      }
+
+      button:hover .first {
+        top: 0;
+        right: 0;
+      }
+      button .second {
+        content: "";
+        position: absolute;
+        left: 25%;
+        top: -100%;
+        height: 100%;
+        width: 25%;
+        background: rgba(155, 213, 242, 0.78);
+      }
+
+      button:hover .second {
+        top: 0;
+        left: 50%;
+      }
+
+      button .third {
+        content: "";
+        position: absolute;
+        left: 50%;
+        height: 100%;
+        top: 100%;
+        width: 25%;
+        background: rgba(155, 213, 242, 0.78);
+      }
+
+      button:hover .third {
+        top: 0;
+        left: 25%;
+      }
+
+      button .fourth {
+        content: "";
+        position: absolute;
+        left: 100%;
+        top: 0;
+        height: 100%;
+        width: 25%;
+        background: rgba(155, 213, 242, 0.78);
+      }
+
+      button:hover .fourth {
+        top: 0;
+        left: 0;
+      }
+
+    </style>
+
+
+
+
+<style>
+
+
+ table {
+            width: 1000px;
+            border-collapse: collapse;
+            margin-top: 20px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid white;
+            text-align: left;
+        }
+        th {
+          background-color:rgba(12, 93, 130, 0.78);
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: white;
+        }
+        tr:hover {
+          background-color:rgba(196, 224, 236, 0.78);
+        }
+        .no-diets {
+            text-align: center;
+            color: #555;
+            padding: 20px;
+            font-size: 18px;
+        }
+
+</style>
+</head>
+
+
+<body   style="background-color:rgba(234, 246, 252, 0.78)">
+
+  <h1 style="font-size: 40px ; color: rgba(2, 27, 39, 0.78)">
+  <br><br>  <br> Diet Plan</h1>
+
+     <br>
+     <br>
+
+
+    
+   
+
+    <div class="button-group">
+        <div class="dropdown">
+            <button class="dropbtn"  >Actions
+      <span class="first"></span>
+      <span class="second"></span>
+      <span class="third"></span>
+      <span class="fourth"></span></button>
+            <br>
+            <div class="dropdown-content" onclick="toggleInputs(event.target.innerText)" >
+              <a href="#" style="background-color: rgba(216, 234, 243, 0.78);width: 200px ; height: 40px" >Select</a>
+              <a href="#" style="background-color: rgba(216, 234, 243, 0.78);width: 200px ; height: 40px">Insert</a>
+              <a href="#" style="background-color: rgba(186, 224, 243, 0.78);width: 200px ; height: 40px">Update</a>
+              <a href="#" style="background-color: rgba(216, 234, 243, 0.78);width: 200px ; height: 40px">Show Patients</a>
+              <a href="#" style="background-color: rgba(186, 224, 243, 0.78);width: 200px ; height: 40px">Assign to Patient</a> 
+       
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+    <form id="clearForm" action="/Clear_Diets" method="POST" style="text-align: center; display: none;">
+          <div class="Insert">
+            <button type="submit" id="clearButton">
+            <img src="../static/images/eraser.png" alt="Clear All" />
+            <span style="font-size: 12px; color: #92725d"><p>Clear</p></span>
+          </button>
+
+          </div>
+    </form>
+
+
+
+    <div class="select-inputs">
+        <div class="find-based-on">
+
+        </div>
+        <form id="dietForm" action="/add_diet" method="POST">
+
+               <div class="Insert">
+
+              <div class="input-group_first_row">
+            <input type="text" id="dietType" name="dietType" placeholder="Diet Type">
+            <input type="text" id="carbIntake" name="carbIntake" placeholder="Carb Intake">
+            <input type="text" id="proteinIntake" name="proteinIntake" placeholder="Protein Intake">
+            </div>
+
+             <div class="input-group_second_row">
+            <input type="text" id="liquidIntake" name="liquidIntake" placeholder="Liquid Intake">
+            <input type="text" id="caloriesPerMeal" name="caloriesPerMeal" placeholder="Calories Per Meal">
+             </div>
+
+
+            <div class="find-button-container">
+                <button type="submit"  class="find-button">
+                  <img src="../static/images/import.png" alt="Insert Patient">
+                        <span style="font-size: 12px; color: #92725d;"><p>Add</p></span>
+                 </button>
+            </div>
+
+            </div>
+
+        </form>
+
+        <!-- New form for deleting a diet -->
+        <form id="deleteForm" action="/delete_diet" method="POST">
+             <div class="Insert">
+            <input type="text" id="dietID" name="dietID" placeholder="Enter Diet ID to Delete" style="width: 200px;">
+
+                  <div class="find-button-container">
+                <button type="submit"  class="find-button">
+                  <img src="../static/images/clear.png" alt="Insert Patient">
+                        <span style="font-size: 12px; color: #92725d;"><p>Delete</p></span>
+                 </button>
+                   </div>
+             </div>
+        </form>
+    </div>
+
+
+
+
+    <!-- New form for searching diets -->
+     <div class="search-container">
+        <form id="searchForm" action="/search_diets" method="POST">
+            <div class="Insert">
+                <label for="searchOption" class="Search_label" style="padding-left: 50px ; color:rgba(5, 60, 88, 0.78);font-weight: bold;">Search By:</label>
+                <input type="text" id="searchInput" name="searchInput" class="search-input" placeholder="">
+                <label for="searchType" class="label-color"></label>
+
+                <select id="searchOption" name="searchOption" onchange="showSearchInput()" style="background-color: rgba(155, 213, 242, 0.78);width: 200px ; height: 40px" >
+
+
+                    <option value=".">Select All</option>
+                    <option value="DietID">ID</option>
+                    <option value="DietType">Diet Type</option>
+                    <option value="CarbIntake">Carb Intake</option>
+                    <option value="ProteinIntake">Protein Intake</option>
+                    <option value="LiquidIntake">Liquid Intake</option>
+                    <option value="CaloriesPerMeal">Calories Per Meal</option>
+                    <option value="Count">View Overall count</option>
+                </select>
+
+                <div class="find-button-container">
+                    <button type="submit" class="find-button">
+                        <img src="../static/images/loupe.png" alt="search Patient">
+                        <span style="font-size: 12px; color: #92725d;"><p>Search</p></span>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+    <form id="patientDetailsForm" action="/diet_Details" method="POST" style="display: none; text-align: center;">
+        <div class="Insert">
+
+            <input type="text" id="patientDetailsID" name="patientDetailsID" placeholder="Enter Diet ID">
+            <div class="find-button-container">
+                <button type="submit" class="find-button">
+                    <img src="../static/images/patient.png" alt="Show Patients">
+                    <span style="font-size: 12px; color: #92725d;"><p>Patients</p></span>
+                </button>
+            </div>
+        </div>
+    </form>
+
+
+
+    <!-- New form for updating a diet -->
+    <div class="update-form">
+        <form id="updateForm" action="/update_diets" method="POST">
+             <div class="Insert">
+
+               <div class="input-group_first_row">
+            <input type="text" id="updateDietID" name="updateDietID" placeholder="Diet ID">
+            <input type="text" id="updateDietType" name="updateDietType" placeholder="Diet Type">
+            <input type="text" id="updateCarbIntake" name="updateCarbIntake" placeholder="Carb Intake">
+               </div>
+               <div class="input-group_second_row">
+            <input type="text" id="updateProteinIntake" name="updateProteinIntake" placeholder="Protein Intake">
+            <input type="text" id="updateLiquidIntake" name="updateLiquidIntake" placeholder="Liquid Intake">
+            <input type="text" id="updateCaloriesPerMeal" name="updateCaloriesPerMeal" placeholder="Calories Per Meal">
+             </div>
+
+                  <div class="find-button-container">
+                <button type="submit"  class="find-button">
+                <img src="../static/images/refresh.png" alt="Update Patient">
+                        <span style="font-size: 12px; color: #92725d;"><p>Update</p></span>
+                 </button>
+            </div>
+
+
+
+            </div>
+        </form>
+    </div>
+
+  <!-- New form for assigning a medical test -->
+    <div class="assign-form" style="display: none;">
+        <form id="assignDietPatient" action="/assignDietPatient" method="POST">
+            <div class="Insert">
+              
+              
+                    <input type="text" id="DietID" name="DietID" placeholder="Insert Diet ID" style=" justify-content: center; align-items: center; align-content: center;" >
+                    <input type="text" id="assignPatientID" name="assignPatientID" placeholder="Insert Patient ID" style=" justify-content: center; align-items: center;">
+              
+
+                <div class="find-button-container">
+                    <button type="submit" class="find-button">
+                        <img src="../static/images/patient.png" alt="Assign to Patient">
+                        <span style="font-size: 12px; color: #92725d;"><p>Assign</p></span>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+
+
+
+<table style="display: {{ 'table' if search_criteria != 'Count' else 'none' }};">
+        <tr>
+            <th>Diet ID</th>
+            <th>Diet Type</th>
+            <th>Carb Intake</th>
+            <th>Protein Intake</th>
+            <th>Liquid Intake</th>
+            <th>Calories Per Meal</th>
+        </tr>
+        {% if diets %}
+        {% for diet in diets %}
+        <tr>
+            <td>{{ diet.DietID }}</td>
+            <td>{{ diet.DietType }}</td>
+            <td>{{ diet.CarbIntake }}</td>
+            <td>{{ diet.ProteinIntake }}</td>
+            <td>{{ diet.LiquidIntake }}</td>
+            <td>{{ diet.CaloriesPerMeal }}</td>
+        </tr>
+        {% endfor %}
+        {% else %}
+        <tr>
+            <td colspan="6" class="no-diets">No diets available</td>
+        </tr>
+        {% endif %}
+    </table>
+
+  <div style="display: {{ 'table' if search_criteria == '.' else 'none' }};">
+    <h2 style="margin-top: 20px; margin-left: 60px;">The Patients taking this Diet:</h2>
+</div>
+
+
+  <table id="patientDetailsTable" style="display: {{ 'table' if search_criteria == '.' else 'none' }};">
+        <tr>
+            <th>Patient ID</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Email</th>
+            <th>Phone Number</th>
+            <th>Age</th>
+            <th>Diet Id</th>
+        </tr>
+        {% if patients %}
+        {% for patient in patients %}
+        <tr>
+            <td>{{ patient.PatientID }}</td>
+            <td>{{ patient.FirstName }}</td>
+            <td>{{ patient.LastName }}</td>
+            <td>{{ patient.Email }}</td>
+            <td>{{ patient.PhoneNumber }}</td>
+            <td>{{ patient.Age }}</td>
+            <td>{{ patient.DietID}}</td>
+        </tr>
+        {% endfor %}
+        {% else %}
+        <tr>
+            <td colspan="7" class="no-patients">No patients available</td>
+        </tr>
+        {% endif %}
+    </table>
+
+
+
+
+  <table id="dietStatsTable" style="display: {{ 'table' if search_criteria == 'Count' else 'none' }};">
+        <tr>
+            <th>Diet ID</th>
+            <th>Diet Type</th>
+            <th>Number of Patients</th>
+            <th>Average Age</th>
+        </tr>
+        {% if diet_stats %}
+        {% for diet in diet_stats %}
+        <tr>
+            <td>{{ diet.DietID }}</td>
+            <td>{{ diet.DietType }}</td>
+            <td>{{ diet.NumberOfPatients }}</td>
+            <td>{{ diet.AverageAge }}</td>
+        </tr>
+        {% endfor %}
+        {% else %}
+        <tr>
+            <td colspan="4" class="no-data">No data available</td>
+        </tr>
+        {% endif %}
+    </table>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+      <div class="flash-message">
+        {% for message in messages %}
+          <p>{{ message }}</p>
+        {% endfor %}
+      </div>
+      {% endif %}
+    {% endwith %}
+
+    {% if error_message %}
+    <p class="error-message">{{ error_message }}</p>
+    {% endif %}
+
+    <br>
+
+
+
+    <script>
+        function toggleInputs(action) {
+            console.log("Action:", action);
+            var selectInputs = document.querySelector('.select-inputs');
+            var clearButton = document.getElementById('clearForm');
+            var dietIDInput = document.getElementById('dietID');
+            var dietForm = document.getElementById('dietForm');
+            var deleteForm = document.getElementById('deleteForm');
+            var searchContainer = document.querySelector('.search-container');
+            var updateForm = document.querySelector('.update-form');
+            var patientDetailsForm = document.getElementById('patientDetailsForm'); // New line to add
+            var assignForm = document.querySelector('.assign-form'); // New
+
+            if (action === 'Insert') {
+                selectInputs.style.display = 'block';
+                clearButton.style.display = 'none';
+                searchContainer.style.display = 'none';
+                updateForm.style.display = 'none';
+                dietIDInput.style.display = 'none';
+                dietForm.style.display = 'block';
+                deleteForm.style.display = 'none';
+                patientDetailsForm.style.display = 'none'; // New line to add
+                dietForm.action = '/add_diet';
+                document.querySelectorAll('.select-inputs input:not(#dietID)').forEach(function(input) {
+                    input.style.display = 'inline-block';
+                    assignForm.style.display = 'none'; // New
+                });
+            } else if (action === 'Delete') {
+                selectInputs.style.display = 'block';
+                clearButton.style.display = 'none';
+                searchContainer.style.display = 'none';
+                updateForm.style.display = 'none';
+                dietIDInput.style.display = 'inline-block';
+                dietForm.style.display = 'none';
+                deleteForm.style.display = 'block';
+                patientDetailsForm.style.display = 'none'; // New line to add
+                document.querySelectorAll('.select-inputs input:not(#dietID)').forEach(function(input) {
+                    input.style.display = 'none';
+                    assignForm.style.display = 'none'; // New
+                });
+            } else if (action === 'Select') {
+                selectInputs.style.display = 'none';
+                clearButton.style.display = 'none';
+                searchContainer.style.display = 'block';
+                updateForm.style.display = 'none';
+                patientDetailsForm.style.display = 'none'; // New line to add
+                assignForm.style.display = 'none'; // New
+            } else if (action === 'Update') {
+                selectInputs.style.display = 'none';
+                clearButton.style.display = 'none';
+                searchContainer.style.display = 'none';
+                updateForm.style.display = 'block';
+                patientDetailsForm.style.display = 'none'; // New line to add
+                assignForm.style.display = 'none'; // New
+            } else if (action === 'Clear') {
+                selectInputs.style.display = 'none';
+                clearButton.style.display = 'block';
+                searchContainer.style.display = 'none';
+                updateForm.style.display = 'none';
+                patientDetailsForm.style.display = 'none'; // New line to add
+                assignForm.style.display = 'none'; // New
+            } else if (action === 'Show Patients') { // New else-if block
+                selectInputs.style.display = 'none';
+                clearButton.style.display = 'none';
+                searchContainer.style.display = 'none';
+                updateForm.style.display = 'none';
+                patientDetailsForm.style.display = 'block'; // New line to add
+                assignForm.style.display = 'none'; // New
+            } else if (action === 'Assign to Patient') { // New
+                selectInputs.style.display = 'none';
+                clearButton.style.display = 'none';
+                searchContainer.style.display = 'none';
+                updateForm.style.display = 'none';
+                patientDetailsForm.style.display = 'none'; // New line to add
+                assignForm.style.display = 'block';
+            } else {
+                selectInputs.style.display = 'none';
+                clearButton.style.display = 'none';
+                searchContainer.style.display = 'none';
+                updateForm.style.display = 'none';
+                patientDetailsForm.style.display = 'none'; // New line to add
+                assignForm.style.display = 'none'; // New
+            }
+        }
+
+
+
+
+            function showSearchInput() {
+            var searchOption = document.getElementById('searchOption').value;
+            var searchInput = document.getElementById('searchInput');
+            if (searchOption === "Count"|| searchOption === ".") {
+                searchInput.style.display = 'none';
+                searchInput.placeholder = '';
+            } else if (searchOption) {
+                searchInput.style.display = 'inline-block';
+                searchInput.placeholder = searchOption;
+            } else {
+                searchInput.style.display = 'none';
+                searchInput.placeholder = '';
+            }
+        }
+
+        // Call the function on page load to set the initial state
+        document.addEventListener("DOMContentLoaded", function() {
+            showSearchInput();
+        });
+    </script>
+
+
+    
+
+<div class="side-nav">
+  <ul>
+
+    <!--**************************************************************-->
+    <a href="{{ url_for('home') }}">
+    <li>
+      <img src="../static/images/home.png" />
+      <p>Home</p>
+    </li>
+    </a>
+    <!--**************************************************************-->
+
+    <a href="{{ url_for('memberships') }}">
+    <li>
+      <img src="../static/images/membership.png" />
+      <p>Membership</p>
+    </li>
+    </a>
+    <!--**************************************************************-->
+      <a href="{{ url_for('patients') }}">
+    <li>
+      <img src="../static/images/patient.png" />
+      <p >Patients</p>
+    </li>
+    </a>
+    <!--**************************************************************-->
+      <a href="{{ url_for('inBody') }}">
+
+      <li>
+        <img src="../static/images/person.png" />
+        <p>InbodyTest</p>
+      </li>
+    </a>
+    <!--**************************************************************-->
+
+    <a href="{{ url_for('medicalTest') }}">
+    <li>
+      <img src="../static/images/blood-tube (1).png" />
+      <p>Medical Test</p>
+    </li>
+      </a>
+
+      <a href="{{ url_for('statistics') }}">
+                          <li>
+                            <img src="../static/images/analytics.png" />
+                            <p>Statistics</p>
+                          </li>
+                            </a>
+      <!--**************************************************************-->
+
+
+       <a href="{{ url_for('salary') }}">
+      <li>
+        <img src="../static/images/medical-team (1).png" />
+        <p>Nutritionist</p>
+      </li>
+    </a>
+    <!--**************************************************************-->
+    <a href="{{ url_for('checkuproom') }}">
+    <li>
+      <img src="../static/images/exam-room.png" />
+      <p>Check-Up Room</p>
+    </li>
+      </a>
+    <!--**************************************************************-->
+    <a href="{{ url_for('lab_technician') }}">
+    <li>
+      <img src="../static/images/observation.png" />
+      <p>Lab Technician</p>
+    </li>
+      </a>
+
+       <a href="{{ url_for('laboratoryRoom') }}">
+    <li>
+      <img src="../static/images/flask.png" />
+      <p>Laboratory Room</p>
+    </li>
+      </a>
+  <!--**************************************************************-->
+
+                            <a href="{{ url_for('past') }}">
+                          <li>
+                            <img src="../static/images/delete-user.png" />
+                            <p>Past Records</p>
+                          </li>
+                            </a>
+
+
+  </ul>
+
+  <!--**************************************************************-->
+
+</div>
+
+
+</body>
+</html>

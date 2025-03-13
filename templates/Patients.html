@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patients</title>
+    <style>
+        .select-inputs input {
+            margin: 5px;
+            padding: 5px;
+            width: 150px;
+        }
+
+        .no-patients {
+            text-align: center;
+            color: rgba(2, 39, 57, 0.78);
+            padding: 20px;
+            font-size: 18px;
+        }
+        .select-inputs {
+            margin-top: 20px;
+            text-align: center;
+            display: none;
+        }
+        .select-inputs input {
+            margin: 5px;
+            padding: 5px;
+            width: 150px;
+        }
+        .find-button {
+            margin-top: 20px;
+        }
+        .find-button-container {
+            text-align: center;
+        }
+        .find-based-on {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .search-container {
+            margin-top: 20px;
+            text-align: center;
+            display: none;
+        }
+        .del-container {
+            margin-top: 20px;
+            text-align: center;
+            display: none;
+        }
+        .update-form {
+            margin-top: 20px;
+            text-align: center;
+            display: none;
+        }
+        .update-form input {
+            margin: 5px;
+            padding: 5px;
+            width: 150px;
+        }
+        .patient-details-form {
+            margin-top: 20px;
+            text-align: center;
+            display: none;
+        }
+        .patient-details-form input {
+            margin: 5px;
+            padding: 5px;
+            width: 150px;
+        }
+    </style>
+
+    <style>
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+
+        .no-memberships {
+            text-align: center;
+            color: rgba(2, 39, 57, 0.78);
+            padding: 20px;
+            font-size: 18px;
+        }
+        .select-inputs, .search-container, .update-form, .assign-form {
+            margin-top: 20px;
+            text-align: center;
+            display: none;
+        }
+        .select-inputs input, .update-form input, .assign-form input {
+            margin: 5px;
+            padding: 5px;
+            width: 150px;
+        }
+        .find-button-container {
+            text-align: center;
+        }
+        .find-button {
+            margin-top: 20px;
+        }
+
+        p{
+            color: rgba(2, 39, 57, 0.78);
+        }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: rgba(2, 39, 57, 0.78);
+        }
+        .button-group {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+
+        button {
+            padding: 20px 40px;
+            font-size: 10px;
+            position: relative;
+            background: transparent;
+            color: rgba(2, 39, 57, 0.78);
+            text-transform: uppercase;
+            border: 3px solid  rgba(3, 60, 88, 0.78);
+            cursor: pointer;
+            transition: all 0.7s;
+            overflow: hidden;
+            border-radius: 100px;
+            width: 120px;
+            height: 50px;
+            font-weight: bold;
+        }
+        button:hover {
+            background-color:  rgba(145, 212, 245, 0.78);
+        }
+        .error-message {
+            color:  rgba(3, 60, 88, 0.78);
+            text-align: center;
+        }
+        .flash-message {
+            color:  rgba(3, 60, 88, 0.78);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .side-nav {
+            width: 100%;
+            height: 100px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: 15px 30px;
+            background: rgba(206, 238, 253, 0.78);
+            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            transition: height 0.3s;
+            z-index: 1000;
+            overflow-x: hidden;
+        }
+
+        .side-nav:hover {
+            height: 120px;
+        }
+
+        .side-nav:hover ul li p {
+            max-height: 130px;
+        }
+
+        .side-nav:hover ul li img {
+            margin-bottom: 10px;
+        }
+
+        .side-nav:hover ul li {
+            justify-content: center;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            flex-direction: row;
+            margin: 0;
+            width: 100%;
+            overflow-x: scroll;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        ul::-webkit-scrollbar {
+            display: none;
+        }
+
+        ul li {
+            margin: 0 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-direction: column;
+        }
+
+        ul li img {
+            width: 30px;
+            margin-bottom: 0;
+            transition: margin-bottom 0.3s;
+        }
+
+        ul li p {
+            white-space: nowrap;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s;
+        }
+
+        ul a {
+            text-decoration: none;
+        }
+
+        @media (max-width: 768px) {
+            .side-nav {
+                height: auto;
+                padding: 10px 20px;
+                flex-direction: row;
+            }
+
+            ul {
+                flex-direction: row;
+                align-items: center;
+                overflow-x: scroll;
+                white-space: nowrap;
+            }
+
+            ul li {
+                margin: 15px;
+            }
+
+            .side-nav:hover {
+                height: auto;
+            }
+        }
+
+        main {
+            margin-top: 150px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .Insert {
+            padding-top: 20px;
+            align-items: center;
+        }
+
+        .Insert label {
+            width: 200px;
+            text-align: right;
+            color: rgba(169, 217, 241, 0.78);
+        }
+        .Insert input {
+            color: rgba(3, 47, 69, 0.78);
+            border-radius: 12px;
+            outline: none;
+            background: rgba(198, 229, 244, 0.78);
+            border: 2px solid rgba(3, 47, 69, 0.78);
+            padding-top: 3px;
+            padding-bottom: 3px;
+        }
+        .Insert input[type="text"] {
+            padding-left: 5px;
+        }
+        .Insert button {
+            border: none;
+            background: none;
+            padding: 0;
+            margin: 0;
+            cursor: pointer;
+        }
+        .Insert img {
+            width: 35px;
+            padding-left: 5px;
+            padding-bottom: 7px;
+        }
+        .input-group_first_row {
+            margin-bottom: 3px;
+        }
+        .input-group_second_row {
+            padding-left: 40px;
+        }
+
+        .Search_label {
+            color: rgba(3, 47, 69, 0.78);
+            padding-left: 210px;
+        }
+        .header .Search_label,
+        .header .patient_p,
+        .header .patientImage {
+            display: inline-block;
+            vertical-align: baseline;
+        }
+        .label-color {
+            color: rgba(169, 217, 241, 0.78);
+            background-color: rgba(169, 217, 241, 0.78);
+        }
+
+        table {
+            width: 1000px;
+            border-collapse: collapse;
+            margin-top: 20px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid white;
+            text-align: left;
+        }
+        th {
+            background-color: rgba(12, 93, 130, 0.78);
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: white;
+        }
+        tr:hover {
+            background-color: rgba(196, 224, 236, 0.78);
+        }
+        .no-diets {
+            text-align: center;
+            color: #555;
+            padding: 20px;
+            font-size: 18px;
+        }
+    </style>
+
+    <style>
+        button:hover {
+            color: #000;
+        }
+        span {
+            transition: all 0.7s;
+            z-index: -1;
+        }
+
+        button .first {
+            content: "";
+            position: absolute;
+            right: 100%;
+            top: 0;
+            width: 5%;
+            height: 100%;
+            background: rgba(155, 213, 242, 0.78);
+        }
+
+        button:hover .first {
+            top: 0;
+            right: 0;
+        }
+        button .second {
+            content: "";
+            position: absolute;
+            left: 25%;
+            top: -100%;
+            height: 100%;
+            width: 25%;
+            background: rgba(155, 213, 242, 0.78);
+        }
+
+        button:hover .second {
+            top: 0;
+            left: 50%;
+        }
+
+        button .third {
+            content: "";
+            position: absolute;
+            left: 50%;
+            height: 100%;
+            top: 100%;
+            width: 25%;
+            background: rgba(155, 213, 242, 0.78);
+        }
+
+        button:hover .third {
+            top: 0;
+            left: 25%;
+        }
+
+        button .fourth {
+            content: "";
+            position: absolute;
+            left: 100%;
+            top: 0;
+            height: 100%;
+            width: 25%;
+            background: rgba(155, 213, 242, 0.78);
+        }
+
+        button:hover .fourth {
+            top: 0;
+            left: 0;
+        }
+    </style>
+</head>
+
+<body style="background-color: rgba(234, 246, 252, 0.78)">
+    <h1 style="font-size: 40px; color: rgba(2, 27, 39, 0.78)">
+        <br><br><br>Patient List
+    </h1>
+
+    <br><br>
+
+    <div class="button-group">
+        <div class="dropdown">
+            <button class="dropbtn">Actions
+                <span class="first"></span>
+                <span class="second"></span>
+                <span class="third"></span>
+                <span class="fourth"></span>
+            </button>
+            <br>
+            <div class="dropdown-content" onclick="toggleInputs(event.target.innerText)">
+                <a href="#" style="background-color: rgba(216, 234, 243, 0.78); width: 200px; height: 40px">Select</a>
+                <a href="#" style="background-color: rgba(186, 224, 243, 0.78); width: 200px; height: 40px">Delete</a>
+                <a href="#" style="background-color: rgba(216, 234, 243, 0.78); width: 200px; height: 40px">Insert</a>
+                <a href="#" style="background-color: rgba(186, 224, 243, 0.78); width: 200px; height: 40px">Update</a>
+                <a href="#" style="background-color: rgba(216, 234, 243, 0.78); width: 200px; height: 40px">Clear</a>
+                <a href="#" style="background-color: rgba(186, 224, 243, 0.78); width: 200px; height: 40px">Show Patient Details</a>
+                <a href="#" onclick="toggleInputs('Assign to Medical Test')" style="background-color: rgba(216, 234, 243, 0.78); width: 200px; height: 40px">Assign to Medical Test</a>
+                <a href="#" onclick="toggleInputs('Delete Medical Test Appointment')" style="background-color: rgba(186, 224, 243, 0.78); width: 200px; height: 40px">Delete Medical Test Appointment</a>
+            </div>
+        </div>
+    </div>
+
+    <form id="clearForm" action="/Clear" method="POST" style="text-align: center; display: none;">
+        <div class="Insert">
+            <button type="submit" id="clearButton">
+                <img src="../static/images/eraser.png" alt="Clear All" />
+                <span style="font-size: 12px; color: #92725d"><p>Clear</p></span>
+            </button>
+        </div>
+    </form>
+
+    <div class="select-inputs">
+        <div class="find-based-on"></div>
+        <form id="patientForm" action="/add_Patient" method="POST">
+            <div class="Insert">
+                <div class="input-group_first_row">
+                    <input type="text" id="patientID" name="patientID" placeholder="Patient ID" style="display: none;">
+                    <input type="text" id="firstName" name="firstName" placeholder="First Name">
+                    <input type="text" id="lastName" name="lastName" placeholder="Last Name">
+                </div>
+                <div class="input-group_second_row">
+                    <input type="text" id="email" name="email" placeholder="Email">
+                    <input type="text" id="phoneNumber" name="phoneNumber" placeholder="Phone Number">
+                    <input type="text" id="age" name="age" placeholder="Age">
+                </div>
+                <div class="find-button-container">
+                    <button type="submit" class="find-button">
+                        <img src="../static/images/import.png" alt="Insert Patient">
+                        <span style="font-size: 12px; color: #92725d;"><p>Add</p></span>
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <form id="deleteForm" action="/delete_Patient" method="POST">
+            <div class="Insert">
+                <input type="text" id="patientID" name="patientID" placeholder="Enter Patient ID to Delete" style="width: 250px;">
+                <div class="find-button-container">
+                    <button type="submit" class="find-button">
+                        <img src="../static/images/clear.png" alt="Insert Patient">
+                        <span style="font-size: 12px; color: #92725d;"><p>Delete</p></span>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="search-container">
+        <form id="searchForm" action="/search_Patients" method="POST">
+            <div class="Insert">
+                <label for="searchOption" class="Search_label" style="padding-left: 50px; color: rgba(5, 60, 88, 0.78); font-weight: bold;">Search By:</label>
+                <input type="text" id="searchInput" name="searchInput" class="search-input" placeholder="">
+                <label for="searchType" class="label-color"></label>
+                <select id="searchOption" name="searchOption" onchange="showSearchInput()" style="background-color: rgba(155, 213, 242, 0.78); width: 200px; height: 40px">
+                    <option value=".">Select All</option>
+                    <option value="PatientID">ID</option>
+                    <option value="FirstName">First Name</option>
+                    <option value="LastName">Last Name</option>
+                    <option value="Email">Email</option>
+                    <option value="PhoneNumber">Phone Number</option>
+                    <option value="Age">Age</option>
+                </select>
+                <br>
+                <div class="find-button-container">
+                    <button type="submit" class="find-button">
+                        <img src="../static/images/loupe.png" alt="search Patient">
+                        <span style="font-size: 12px; color: #92725d;"><p>Search</p></span>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="update-form">
+        <form id="updateForm" action="/update" method="POST">
+            <div class="Insert">
+                <div class="input-group_first_row">
+                    <input type="text" id="updatePatientID" name="updatePatientID" placeholder="Patient ID">
+                    <input type="text" id="updateFirstName" name="updateFirstName" placeholder="First Name">
+                    <input type="text" id="updateLastName" name="updateLastName" placeholder="Last Name">
+                </div>
+                <div class="input-group_second_row">
+                    <input type="text" id="updateEmail" name="updateEmail" placeholder="Email">
+                    <input type="text" id="updatePhoneNumber" name="updatePhoneNumber" placeholder="Phone Number">
+                    <input type="text" id="updateAge" name="updateAge" placeholder="Age">
+                </div>
+                <div class="find-button-container">
+                    <button type="submit" class="find-button">
+                        <img src="../static/images/refresh.png" alt="Update Patient">
+                        <span style="font-size: 12px; color: #92725d;"><p>Update</p></span>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="patient-details-form">
+        <form id="patientDetailsForm" action="/patient_Details" method="POST">
+            <div class="Insert">
+                <input type="text" id="patientDetailsID" name="patientDetailsID" placeholder="Enter Patient ID" style="width: 200px;">
+                <div class="find-button-container">
+                    <div class="input-group_second_row">
+                        <button type="submit" class="find-button">
+                            <img src="../static/images/patient.png" alt="Insert Patient">
+                            <span style="font-size: 12px; color: #92725d;"><p style="font-size: 10px;">Patients</p></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="assign-form" style="display: none;">
+        <form id="assignMedicalTestForm" action="/AssignMedicalTest" method="POST">
+            <div class="Insert">
+                <div class="input-group_first_row">
+                    <input type="text" id="medicalTestID" name="medicalTestID" placeholder="Medical Test ID">
+                    <input type="text" id="assignPatientID" name="assignPatientID" placeholder="Patient ID">
+                </div>
+                <div class="find-button-container">
+                    <button type="submit" class="find-button">
+                        <img src="../static/images/patient.png" alt="Assign Test">
+                        <span style="font-size: 12px; color: #92725d;"><p>Assign</p></span>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="del-container">
+        <form id="deleteTestForm" action="/del_Patients" method="POST">
+            <div class="Insert">
+                <label for="deleteOption" class="Search_label" style="padding-left: 50px; color: rgba(5, 60, 88, 0.78); font-weight: bold;">Delete By:</label>
+                <select id="deleteOption" name="deleteOption" onchange="showDeleteInput()" style="background-color: rgba(155, 213, 242, 0.78); width: 200px; height: 40px">
+                    <option value=""></option>
+                    <option value="all">Delete All</option>
+                    <option value="PatientID">Delete by Patient ID</option>
+                    <option value="TestID">Delete by Test ID</option>
+                </select>
+                <br>
+                <br>
+                <br>
+
+                <div class="input-group_first_row" id="deleteAllInputs" style="display: none; padding-left: 50px;">
+                    <input type="text" id="deleteTestID" name="deleteTestID" placeholder="Test ID">
+                    <input type="text" id="deletePatientID" name="deletePatientID" placeholder="Patient ID">
+                </div>
+
+                <div class="input-group_first_row" id="deletePatientInput" style="display: none; padding-left: 50px;">
+                    <input type="text" id="deleteByPatientID" name="deleteByPatientID" placeholder="Patient ID">
+                </div>
+                <div class="input-group_first_row" id="deleteTestInput" style="display: none;  padding-left: 50px;">
+                    <input type="text" id="deleteByTestID" name="deleteByTestID" placeholder="Test ID">
+                </div>
+                <div class="find-button-container">
+                    <button type="submit" class="find-button">
+                        <img src="../static/images/clear.png" alt="Delete Test Appointment">
+                        <span style="font-size: 12px; color: #92725d;"><p>Delete</p></span>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+    <br>
+    <br>
+
+    <table>
+        <tr>
+            <th>Patient ID</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Email</th>
+            <th>Phone Number</th>
+            <th>Age</th>
+        </tr>
+        {% if patients %}
+        {% for patient in patients %}
+        <tr>
+            <td>{{ patient.PatientID }}</td>
+            <td>{{ patient.FirstName }}</td>
+            <td>{{ patient.LastName }}</td>
+            <td>{{ patient.Email }}</td>
+            <td>{{ patient.PhoneNumber }}</td>
+            <td>{{ patient.Age }}</td>
+        </tr>
+        {% endfor %}
+        {% else %}
+        <tr>
+            <td colspan="6" class="no-patients">No patients available</td>
+        </tr>
+        {% endif %}
+    </table>
+
+    <br><br>
+
+   <div style="display: {{ 'table' if search_criteria == '.' else 'none' }}; ">
+        <h2 style="margin-top: 20px; margin-left: 60px; color: rgba(3, 47, 69, 0.78);  text-align: center;">The Patients' InBody Scans:</h2>
+    </div>
+
+    <table id="patientDetailsTable" style="display: {{ 'table' if search_criteria == '.' else 'none' }};">
+        <tr>
+            <th>InBody ID</th>
+            <th>Scan Date</th>
+            <th>Total Skeletal Muscle Mass</th>
+            <th>Total Body Fat</th>
+            <th>Total Body Water</th>
+            <th>Waist Hip Ratio</th>
+            <th>Obesity Degree</th>
+        </tr>
+        {% if inbodyscans %}
+        {% for inbodyscan in inbodyscans %}
+        <tr>
+            <td>{{ inbodyscan.InBodyID }}</td>
+            <td>{{ inbodyscan.ScanDate }}</td>
+            <td>{{ inbodyscan.TotalSkeletalMuscleMass }}</td>
+            <td>{{ inbodyscan.TotalBodyFat }}</td>
+            <td>{{ inbodyscan.TotalBodyWater }}</td>
+            <td>{{ inbodyscan.WaistHipRatio }}</td>
+            <td>{{ inbodyscan.ObesityDegree }}</td>
+        </tr>
+        {% endfor %}
+        {% else %}
+        <tr>
+            <td colspan="7" class="no-inbodyscans">No InBody scans available</td>
+        </tr>
+        {% endif %}
+    </table>
+
+    <br><br>
+
+    <div style="display: {{ 'table' if search_criteria == '.' else 'none' }};">
+    <h2 style="margin-top: 20px; margin-left: 60px; color: rgba(3, 47, 69, 0.78);  text-align: center;">The Patients' Diets:</h2>
+</div>
+   <table id="patientDetailsTable1" style="display: {{ 'table' if search_criteria == '.' else 'none' }};">
+        <tr>
+            <th>Diet ID</th>
+            <th>Diet Type</th>
+            <th>Carb Intake</th>
+            <th>Protein Intake</th>
+            <th>Liquid Intake</th>
+            <th>Calories Per Meal</th>
+        </tr>
+        {% if diets %}
+        {% for diet in diets %}
+        <tr>
+            <td>{{ diet.DietID }}</td>
+            <td>{{ diet.DietType }}</td>
+            <td>{{ diet.CarbIntake }}</td>
+            <td>{{ diet.ProteinIntake }}</td>
+            <td>{{ diet.LiquidIntake }}</td>
+            <td>{{ diet.CaloriesPerMeal }}</td>
+        </tr>
+        {% endfor %}
+        {% else %}
+        <tr>
+            <td colspan="6" class="no-diets">No diets available</td>
+        </tr>
+        {% endif %}
+    </table>
+
+    <br><br>
+
+    <div style="display: {{ 'table' if search_criteria == '.' else 'none' }};">
+    <h2 style="margin-top: 20px; margin-left: 60px; color: rgba(3, 47, 69, 0.78);  text-align: center;">The Patients Memberships:</h2>
+</div>
+   <table id="patientDetailsTable2" style="display: {{ 'table' if search_criteria == '.' else 'none' }};">
+        <tr>
+            <th>Membership ID</th>
+            <th>Registration Date</th>
+            <th>Membership Fees</th>
+            <th>Payment Type</th>
+            <th>Insurance Type</th>
+            <th>Visits Per Month</th>
+            <th>Membership Duration</th>
+        </tr>
+        {% if memberships %}
+        {% for membership in memberships %}
+        <tr>
+            <td>{{ membership.membership_id }}</td>
+            <td>{{ membership.registration_date }}</td>
+            <td>{{ membership.membership_fees }}</td>
+            <td>{{ membership.payment_type }}</td>
+            <td>{{ membership.insurance_type }}</td>
+            <td>{{ membership.visits_per_month }}</td>
+            <td>{{ membership.membership_duration }}</td>
+        </tr>
+        {% endfor %}
+        {% else %}
+        <tr>
+            <td colspan="7" class="no-memberships">No memberships available</td>
+        </tr>
+        {% endif %}
+    </table>
+
+    <br><br>
+
+    <div style="display: {{ 'table' if search_criteria == '.' else 'none' }};">
+    <h2 style="margin-top: 20px; margin-left: 60px; color: rgba(3, 47, 69, 0.78);  text-align: center;">The Patients MedicalTests:</h2>
+</div>
+     <table id="testDetailsTable" style="display: {{ 'table' if search_criteria == '.' else 'none' }};">
+        <tr>
+            <th>Patient ID</th>
+            <th>Date Taken</th>
+            <th>Next Date to Take</th>
+            <th>Test ID</th>
+            <th>Test Type</th>
+        </tr>
+        {% if tests %}
+        {% for test in tests %}
+        <tr>
+            <td>{{ test.PatientID }}</td>
+            <td>{{ test.date_taken }}</td>
+            <td>{{ test.next_date_to_take }}</td>
+            <td>{{ test.test_id }}</td>
+            <td>{{ test.testType }}</td>
+        </tr>
+        {% endfor %}
+        {% else %}
+        <tr>
+            <td colspan="5" class="no-tests">No tests available</td>
+        </tr>
+        {% endif %}
+    </table>
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div class="flash-message">
+        {% for message in messages %}
+        <p>{{ message }}</p>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    {% if error_message %}
+    <p class="error-message">{{ error_message }}</p>
+    {% endif %}
+
+    <button onclick="window.location.href='/pastPatients'">Archive</button>
+
+    <script>
+        function toggleInputs(action) {
+            console.log("Action:", action);
+            var selectInputs = document.querySelector('.select-inputs');
+            var clearButton = document.getElementById('clearForm');
+            var patientIDInput = document.getElementById('patientID');
+            var patientForm = document.getElementById('patientForm');
+            var deleteForm = document.getElementById('deleteForm');
+            var searchContainer = document.querySelector('.search-container');
+            var delContainer = document.querySelector('.del-container');
+            var updateForm = document.querySelector('.update-form');
+            var patientDetailsForm = document.querySelector('.patient-details-form');
+            var patientDetailsTable = document.getElementById('patientDetailsTable');
+            var patientDetailsTable1 = document.getElementById('patientDetailsTable1');
+            var patientDetailsTable2 = document.getElementById('patientDetailsTable2');
+            var assignForm = document.querySelector('.assign-form');
+
+            if (action === 'Insert') {
+                selectInputs.style.display = 'block';
+                clearButton.style.display = 'none';
+                searchContainer.style.display = 'none';
+                updateForm.style.display = 'none';
+                patientDetailsForm.style.display = 'none';
+                patientIDInput.style.display = 'none';
+                patientForm.style.display = 'block';
+                deleteForm.style.display = 'none';
+                assignForm.style.display = 'none';
+                patientForm.action = '/add_Patient';
+                delContainer.style.display = 'none';
+                document.querySelectorAll('.select-inputs input:not(#patientID)').forEach(function(input) {
+                    input.style.display = 'inline-block';
+                });
+            } else if (action === 'Delete') {
+                selectInputs.style.display = 'block';
+                clearButton.style.display = 'none';
+                searchContainer.style.display = 'none';
+                updateForm.style.display = 'none';
+                patientDetailsForm.style.display = 'none';
+                patientIDInput.style.display = 'inline-block';
+                patientForm.style.display = 'none';
+                deleteForm.style.display = 'block';
+                assignForm.style.display = 'none';
+                delContainer.style.display = 'none';
+                document.querySelectorAll('.select-inputs input:not(#patientID)').forEach(function(input) {
+                    input.style.display = 'none';
+                });
+            } else if (action === 'Select') {
+                selectInputs.style.display = 'none';
+                clearButton.style.display = 'none';
+                searchContainer.style.display = 'block';
+                updateForm.style.display = 'none';
+                patientDetailsForm.style.display = 'none';
+                assignForm.style.display = 'none';
+                delContainer.style.display = 'none';
+            } else if (action === 'Update') {
+                selectInputs.style.display = 'none';
+                clearButton.style.display = 'none';
+                searchContainer.style.display = 'none';
+                updateForm.style.display = 'block';
+                patientDetailsForm.style.display = 'none';
+                assignForm.style.display = 'none';
+                delContainer.style.display = 'none';
+            } else if (action === 'Clear') {
+                selectInputs.style.display = 'none';
+                clearButton.style.display = 'block';
+                searchContainer.style.display = 'none';
+                updateForm.style.display = 'none';
+                patientDetailsForm.style.display = 'none';
+                assignForm.style.display = 'none';
+                delContainer.style.display = 'none';
+            } else if (action === 'Show Patient Details') {
+                selectInputs.style.display = 'none';
+                clearButton.style.display = 'none';
+                searchContainer.style.display = 'none';
+                updateForm.style.display = 'none';
+                patientDetailsForm.style.display = 'block';
+                delContainer.style.display = 'none';
+                assignForm.style.display = 'none';
+            } else if (action === 'Assign to Medical Test') {
+                selectInputs.style.display = 'none';
+                clearButton.style.display = 'none';
+                delContainer.style.display = 'none';
+                searchContainer.style.display = 'none';
+                updateForm.style.display = 'none';
+                patientDetailsForm.style.display = 'none';
+                assignForm.style.display = 'block';
+            } else if (action === 'Delete Medical Test Appointment') {
+                selectInputs.style.display = 'none';
+                clearButton.style.display = 'none';
+                delContainer.style.display = 'block';
+                searchContainer.style.display = 'none';
+                updateForm.style.display = 'none';
+                patientDetailsForm.style.display = 'none';
+                assignForm.style.display = 'none';
+            } else {
+                selectInputs.style.display = 'none';
+                clearButton.style.display = 'none';
+                searchContainer.style.display = 'none';
+                updateForm.style.display = 'none';
+                patientDetailsForm.style.display = 'none';
+                assignForm.style.display = 'none';
+                delContainer.style.display = 'none';
+            }
+        }
+
+        function showSearchInput() {
+            var searchOption = document.getElementById('searchOption').value;
+            var searchInput = document.getElementById('searchInput');
+            if (searchOption) {
+                searchInput.style.display = 'inline-block';
+                searchInput.placeholder = searchOption;
+            } else if (searchOption === '.') {
+                searchInput.style.display = 'none';
+                searchInput.placeholder = '';
+            } else {
+                searchInput.style.display = 'none';
+                searchInput.placeholder = '';
+            }
+        }
+
+        function showDeleteInput() {
+            var deleteOption = document.getElementById('deleteOption').value;
+            var deleteAllInputs = document.getElementById('deleteAllInputs');
+            var deletePatientInput = document.getElementById('deletePatientInput');
+            var deleteTestInput = document.getElementById('deleteTestInput');
+
+            if (deleteOption === 'all') {
+                deleteAllInputs.style.display = 'block';
+                deletePatientInput.style.display = 'none';
+                deleteTestInput.style.display = 'none';
+            } else if (deleteOption === 'PatientID') {
+                deleteAllInputs.style.display = 'none';
+                deletePatientInput.style.display = 'block';
+                deleteTestInput.style.display = 'none';
+            } else if (deleteOption === 'TestID') {
+                deleteAllInputs.style.display = 'none';
+                deletePatientInput.style.display = 'none';
+                deleteTestInput.style.display = 'block';
+            } else {
+                deleteAllInputs.style.display = 'none';
+                deletePatientInput.style.display = 'none';
+                deleteTestInput.style.display = 'none';
+            }
+        }
+    </script>
+
+    <div class="side-nav">
+        <ul>
+            <a href="{{ url_for('home') }}">
+                <li>
+                    <img src="../static/images/home.png" />
+                    <p>Home</p>
+                </li>
+            </a>
+            <a href="{{ url_for('memberships') }}">
+                <li>
+                    <img src="../static/images/membership.png" />
+                    <p>Membership</p>
+                </li>
+            </a>
+            <a href="{{ url_for('inBody') }}">
+                <li>
+                    <img src="../static/images/person.png" />
+                    <p>InbodyTest</p>
+                </li>
+            </a>
+            <a href="{{ url_for('medicalTest') }}">
+                <li>
+                    <img src="../static/images/blood-tube (1).png" />
+                    <p>Medical Test</p>
+                </li>
+            </a>
+            <a href="{{ url_for('statistics') }}">
+                <li>
+                    <img src="../static/images/analytics.png" />
+                    <p>Statistics</p>
+                </li>
+            </a>
+            <a href="{{ url_for('salary') }}">
+                <li>
+                    <img src="../static/images/medical-team (1).png" />
+                    <p>Nutritionist</p>
+                </li>
+            </a>
+            <a href="{{ url_for('checkuproom') }}">
+                <li>
+                    <img src="../static/images/exam-room.png" />
+                    <p>Check-Up Room</p>
+                </li>
+            </a>
+            <a href="{{ url_for('lab_technician') }}">
+                <li>
+                    <img src="../static/images/observation.png" />
+                    <p>Lab Technician</p>
+                </li>
+            </a>
+            <a href="{{ url_for('laboratoryRoom') }}">
+                <li>
+                    <img src="../static/images/flask.png" />
+                    <p>Laboratory Room</p>
+                </li>
+            </a>
+            <a href="{{ url_for('diets') }}">
+                <li>
+                    <img src="../static/images/diet (1).png" />
+                    <p>Diet</p>
+                </li>
+            </a>
+
+
+                            <a href="{{ url_for('past') }}">
+                          <li>
+                            <img src="../static/images/delete-user.png" />
+                            <p>Past Records</p>
+                          </li>
+                            </a>
+
+                            <a href="{{ url_for('index') }}">
+                          <li>
+                            <img src="../static/images/logout.png" />
+                              <p>LogOut</p>
+                            <p></p>
+                          </li>
+                          </a>
+        </ul>
+    </div>
+</body>
+</html>
