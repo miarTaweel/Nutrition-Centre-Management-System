@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab Technicians Management</title>
+    <style>
+        body {
+            background-color: #F3EDE3;
+            font-family: 'Arial', sans-serif;
+            color: rgba(5, 60, 88, 0.78);
+            margin: 0;
+        }
+        .content {
+            padding: 20px;
+        }
+        h1 {
+            color:rgba(5, 60, 88, 0.78) ;
+        }
+        .search-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .search-container label {
+            margin-right: 10px;
+        }
+        .search-container select {
+            padding: 10px;
+            border: 1px solid #EDE0D4;
+            border-radius: 25px;
+            background: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 5"><path fill="%23333" d="M2 0L0 2h4L2 0zM2 5L0 3h4L2 5z"/></svg>') no-repeat right 10px center;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            width: 220px;
+            margin-right: 10px;
+            transition: all 0.3s ease;
+        }
+        .search-container select:focus {
+            outline: none;
+            border-color: rgba(5, 60, 88, 0.78);
+            box-shadow: 0 0 10px rgba(5, 60, 88, 0.78);
+        }
+        .search-container input[type="text"],
+        .search-container input[type="number"],
+        .search-container input[type="email"] {
+            padding: 10px;
+            border: 1px solid #EDE0D4;
+            border-radius: 25px;
+            width: 200px;
+            margin-right: 10px;
+            display: none;
+            transition: all 0.3s ease;
+        }
+        .search-container input[type="text"]:focus,
+        .search-container input[type="number"]:focus,
+        .search-container input[type="email"]:focus {
+            outline: none;
+            border-color: #5A4036;
+            box-shadow: 0 0 10px rgba(90, 64, 54, 0.5);
+        }
+        .search-container button {
+            background-color: rgba(5, 60, 88, 0.78);
+            color: #FFF;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .search-container button:hover {
+            background-color:rgba(5, 60, 88, 0.78);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #EDE0D4;
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: rgba(12, 93, 130, 0.78);
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: white;
+        }
+        tr:nth-child(odd) {
+            background-color:rgba(196, 224, 236, 0.78);
+        }
+        .hidden {
+            display: none;
+        }
+        .alert-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1050;
+        }
+        .alert {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+        .alert.show {
+            display: block;
+            opacity: 1;
+        }
+        .form-container {
+            background-color: #FFF;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        .form-container h2 {
+            margin-bottom: 20px;
+        }
+        .form-container label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-container input[type="text"],
+        .form-container input[type="number"],
+        .form-container input[type="email"] {
+            width: calc(100% - 10px);
+            padding: 5px;
+            margin-bottom: 10px;
+            border: 1px solid #DDD;
+            border-radius: 5px;
+        }
+        .form-container button {
+            background-color: rgba(57, 129, 165, 0.78);
+            color: #FFF;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .action-buttons {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+        }
+        .action-buttons button {
+            background-color: rgba(57, 129, 165, 0.78);
+            color: #FFF;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 25px;
+            transition: background-color 0.3s;
+        }
+        .action-buttons button:hover {
+            background-color: rgba(131, 179, 201, 0.78);
+        }
+        #menuForm {
+            display: flex;
+            justify-content: flex-start;
+            margin-bottom: 20px;
+        }
+        #actionSelect {
+            padding: 10px;
+            border: 1px solid #EDE0D4;
+            border-radius: 25px;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            width: 220px;
+        }
+        #actionSelect:focus {
+            outline: none;
+            border-color: rgba(5, 60, 88, 0.78);
+            box-shadow: 0 0 10px rgba(90, 64, 54, 0.5);
+        }
+        .archived-button {
+            background-color: rgba(5, 60, 88, 0.78);
+            color: #FFF;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 25px;
+            transition: background-color 0.3s;
+            margin-top: 20px;
+        }
+        .archived-button:hover {
+            background-color: rgba(131, 179, 201, 0.78);
+        }
+    </style>
+
+    
+    <style>
+        .side-nav {
+            width: 100%;
+            height: 100px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: 15px 30px;
+            background: rgba(206, 238, 253, 0.78);
+            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            transition: height 0.3s;
+            z-index: 1000;
+            overflow-x: hidden; /* Hide the horizontal scrollbar */
+        }
+        
+        .side-nav:hover {
+            height: 120px;
+        }
+        
+        .side-nav:hover ul li p {
+            max-height: 130px;
+        }
+        
+        .side-nav:hover ul li img {
+            margin-bottom: 10px;
+        }
+        
+        .side-nav:hover ul li {
+            justify-content: center;
+        }
+        
+        ul {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            flex-direction: row;
+            margin: 0;
+            width: 100%;
+            overflow-x: scroll; /* Enable horizontal scrolling */
+            -ms-overflow-style: none;  /* Internet Explorer 10+ */
+            scrollbar-width: none;  /* Firefox */
+        }
+        
+        ul::-webkit-scrollbar {
+            display: none;  /* Safari and Chrome */
+        }
+        
+        ul li {
+            margin: 0 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-direction: column;
+        }
+        
+        ul li img {
+            width: 30px;
+            margin-bottom: 0;
+            transition: margin-bottom 0.3s;
+        }
+        
+        ul li p {
+            white-space: nowrap;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s;
+        }
+        
+        ul a {
+            text-decoration: none;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .side-nav {
+                height: auto;
+                padding: 10px 20px;
+                flex-direction: row;
+            }
+        
+            ul {
+                flex-direction: row;
+                align-items: center;
+                overflow-x: scroll; /* Enable horizontal scrolling on small screens */
+                white-space: nowrap; /* Ensure items do not wrap */
+            }
+        
+            ul li {
+                margin: 15px;
+            }
+        
+            .side-nav:hover {
+                height: auto;
+            }
+        }
+        
+        p{
+            color: rgba(5, 43, 62, 0.78);
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function showForm(action) {
+            document.getElementById('insertForm').classList.add('hidden');
+            document.getElementById('deleteForm').classList.add('hidden');
+            document.getElementById('updateForm').classList.add('hidden');
+            document.getElementById('clearForm').classList.add('hidden');
+            document.getElementById('totalSalaryForm').classList.add('hidden');
+
+            if (action === 'insert') {
+                document.getElementById('insertForm').classList.remove('hidden');
+            } else if (action === 'delete') {
+                document.getElementById('deleteForm').classList.remove('hidden');
+            } else if (action === 'update') {
+                document.getElementById('updateForm').classList.remove('hidden');
+            } else if (action === 'clear') {
+                document.getElementById('clearForm').classList.remove('hidden');
+            } else if (action === 'totalSalary') {
+                document.getElementById('totalSalaryForm').classList.remove('hidden');
+            }
+        }
+
+        $(document).ready(function() {
+            // Show alerts with animation
+            $('.alert').addClass('show');
+
+            // Automatically hide alerts after 5 seconds
+            setTimeout(function() {
+                $('.alert').removeClass('show');
+                setTimeout(function() {
+                    $('.alert').alert('close');
+                }, 500);
+            }, 5000);
+
+            // Show input field when criteria changes
+            function showInputField() {
+                var selectedCriteria = document.getElementById("searchCriteria").value;
+                var inputFields = document.querySelectorAll('.search-container input');
+                inputFields.forEach(function (inputField) {
+                    inputField.style.display = "none";
+                });
+                 // Clear tables
+                document.querySelector('#labTechniciansTable tbody').innerHTML = '';
+                document.querySelector('#labRoomsTable tbody').innerHTML = '';
+
+                if (selectedCriteria === "id") {
+                    document.getElementById("idInput").style.display = "block";
+                } else if (selectedCriteria === "name") {
+                    document.getElementById("nameInput").style.display = "block";
+                } else if (selectedCriteria === "phoneNumber") {
+                    document.getElementById("phoneInput").style.display = "block";
+                } else if (selectedCriteria === "email") {
+                    document.getElementById("emailInput").style.display = "block";
+                } else if (selectedCriteria === "shiftHours") {
+                    document.getElementById("shiftHoursInput").style.display = "block";
+                } else if (selectedCriteria === "tools") {
+                    document.getElementById("toolsInput").style.display = "block";
+                } else if (selectedCriteria === "salaryRange") {
+                    document.getElementById("minSalary").style.display = "block";
+                    document.getElementById("maxSalary").style.display = "block";
+                } else if (selectedCriteria === "lab_id") {
+                    document.getElementById("labIDInput").style.display = "block";
+                } else if (selectedCriteria === "search_lab_room") {
+                    document.getElementById("technicianIdInput").style.display = "block";
+                } else if (selectedCriteria === "select_all") {
+                    document.getElementById("labTechniciansTable").style.display = "table";
+                } else if (selectedCriteria === "salary") {
+                    document.getElementById("salaryInput").style.display = "block";
+                }
+            }
+
+            // Event listener for search criteria change
+            document.getElementById("searchCriteria").addEventListener("change", showInputField);
+        });
+
+        function showTotalSalary() {
+            $.ajax({
+                url: '/get_salary_stats',
+                type: 'GET',
+                success: function(response) {
+                    var salaryResults = document.getElementById('salaryResults');
+                    salaryResults.innerHTML = '<p>Total Salary: ' + response.salary_sum + '</p><p>Average Salary: ' + response.salary_avg + '</p>';
+                },
+                error: function(error) {
+                    console.error('Error fetching salary stats:', error);
+                }
+            });
+        }
+
+        // Show salary stats when totalSalaryForm is displayed
+        document.getElementById('actionSelect').addEventListener('change', function() {
+            if (this.value === 'totalSalary') {
+                showTotalSalary();
+            }
+        });
+    </script>
+</head>
+<body style="background-color:rgba(234, 246, 252, 0.78)">
+
+    <div class="content">
+        <div class="alert-container">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        </div>
+
+        <br><br><br>
+
+        <h1 style="font-size: 40px; color: rgba(2, 27, 39, 0.78)">
+            <br><br><br> Manage Lab Technicians
+        </h1>
+
+        <form id="menuForm">
+            <label for="actionSelect" style="color:rgba(5, 60, 88, 0.78); font-weight: bold; font-size: larger;">Select Action:</label>
+            <select id="actionSelect" name="actionSelect" onchange="showForm(this.value)">
+                <option value="" style="background-color: rgba(186, 224, 243, 0.78); width: 200px; height: 40px">--Select Action--</option>
+                <option value="insert" style="background-color: rgba(216, 234, 243, 0.78); width: 200px; height: 40px">Insert Lab Technician</option>
+                <option value="delete" style="background-color: rgba(186, 224, 243, 0.78); width: 200px; height: 40px">Delete Lab Technician</option>
+                <option value="update" style="background-color: rgba(216, 234, 243, 0.78); width: 200px; height: 40px">Update Lab Technician</option>
+                <option value="clear" style="background-color: rgba(186, 224, 243, 0.78); width: 200px; height: 40px">Clear All Lab Technicians</option>
+                <option value="totalSalary" style="background-color: rgba(216, 234, 243, 0.78); width: 200px; height: 40px">View Total & Average Salary</option>
+            </select>
+        </form>
+
+        <form id="insertForm" action="/add_lab_technician" method="post" class="form-container hidden">
+            <h2>Insert Lab Technician</h2>
+            <label for="technicianName">Name:</label>
+            <input type="text" id="technicianName" name="technicianName" required>
+
+            <label for="technicianPhoneNumber">Phone Number:</label>
+            <input type="text" id="technicianPhoneNumber" name="technicianPhoneNumber" required>
+
+            <label for="salary">Salary:</label>
+            <input type="number" id="salary" name="salary" required>
+
+            <label for="VisitsNumber">Visits Number:</label>
+            <input type="number" id="VisitsNumber" name="VisitsNumber" required>
+
+            <label for="technicianEmail">Email:</label>
+            <input type="email" id="technicianEmail" name="technicianEmail" required>
+
+            <label for="shiftHours">Shift Hours:</label>
+            <input type="text" id="shiftHours" name="shiftHours" required>
+
+            <label for="tools">Tools:</label>
+            <input type="text" id="tools" name="tools" required>
+
+            <label for="lab_id">Lab ID:</label>
+            <input type="text" id="lab_id" name="lab_id" required>
+
+            <button type="submit">Insert</button>
+        </form>
+
+        <form id="deleteForm" action="/delete_lab_technician" method="POST" class="form-container hidden">
+            <h2>Delete Lab Technician</h2>
+            <label for="deleteTechnicianID">Technician ID:</label>
+            <input type="text" id="deleteTechnicianID" name="deleteTechnicianID" required>
+            <button type="submit">Delete</button>
+        </form>
+
+        <form id="updateForm" action="/update_LabTechnicians" method="post" class="form-container hidden">
+            <h2>Update Lab Technician</h2>
+            <label for="technicianID">Technician ID:</label>
+            <input type="text" id="technicianID" name="technicianID" required>
+
+            <label for="technicianName">Name:</label>
+            <input type="text" id="technicianName" name="technicianName">
+
+            <label for="technicianPhoneNumber">Phone Number:</label>
+            <input type="text" id="technicianPhoneNumber" name="technicianPhoneNumber">
+
+            <label for="salary">Salary:</label>
+            <input type="number" id="salary" name="salary">
+
+            <label for="VisitsNumber">Visits Number:</label>
+            <input type="number" id="VisitsNumber" name="VisitsNumber">
+
+            <label for="technicianEmail">Email:</label>
+            <input type="email" id="technicianEmail" name="technicianEmail">
+
+            <label for="shiftHours">Shift Hours:</label>
+            <input type="text" id="shiftHours" name="shiftHours">
+
+            <label for="tools">Tools:</label>
+            <input type="text" id="tools" name="tools">
+
+            <label for="lab_id">Lab ID:</label>
+            <input type="text" id="lab_id" name="lab_id">
+
+            <button type="submit">Update</button>
+        </form>
+
+        <form id="clearForm" action="/clear_all_lab_technicians" method="POST" class="form-container hidden">
+            <h2>Clear All Lab Technicians</h2>
+            <p>Are you sure you want to clear all lab technicians?</p>
+            <button type="submit">Clear All</button>
+        </form>
+
+        <form id="totalSalaryForm" class="form-container hidden">
+            <h2>Total and Average Salary</h2>
+            <div id="salaryResults"></div>
+        </form>
+
+        <h1>Search Lab Technicians</h1>
+        <form action="/search_lab_technicians" method="post">
+            <div class="search-container">
+                <label for="searchCriteria">Choose Search Criteria:</label>
+                <select id="searchCriteria" name="searchCriteria">
+                    <option value="" style="background-color: rgba(186, 224, 243, 0.78); width: 200px; height: 40px">--Select Search Criteria--</option>
+                    <option value="id" style="background-color: rgba(216, 234, 243, 0.78); width: 200px; height: 40px">Search by ID</option>
+                    <option value="name" style="background-color: rgba(186, 224, 243, 0.78); width: 200px; height: 40px">Search by Name</option>
+                    <option value="salary" style="background-color: rgba(216, 234, 243, 0.78); width: 200px; height: 40px">Search by Salary</option>
+                    <option value="phoneNumber" style="background-color: rgba(186, 224, 243, 0.78); width: 200px; height: 40px">Search by Phone Number</option>
+                    <option value="email" style="background-color: rgba(216, 234, 243, 0.78); width: 200px; height: 40px">Search by Email</option>
+                    <option value="shiftHours" style="background-color: rgba(186, 224, 243, 0.78); width: 200px; height: 40px">Search by Shift Hours</option>
+                    <option value="tools" style="background-color: rgba(216, 234, 243, 0.78); width: 200px; height: 40px">Search by Tools</option>
+                    <option value="lab_id" style="background-color: rgba(186, 224, 243, 0.78); width: 200px; height: 40px">Search by Lab ID</option>
+                    <option value="search_lab_room" style="background-color: rgba(216, 234, 243, 0.78); width: 200px; height: 40px">Search by Technician ID for Lab Room</option>
+                    <option value="salaryRange" style="background-color: rgba(186, 224, 243, 0.78); width: 200px; height: 40px">Search by Salary Range</option>
+                    <option value="select_all" style="background-color: rgba(216, 234, 243, 0.78); width: 200px; height: 40px">Select All Technicians</option>
+                </select>
+
+                <!-- Input fields for different search criteria -->
+                <input type="number" id="idInput" name="idInput" placeholder="Enter ID" style="display: none;">
+                <input type="text" id="nameInput" name="nameInput" placeholder="Enter Name" style="display: none;">
+                <input type="text" id="phoneInput" name="phoneInput" placeholder="Enter Phone Number" style="display: none;">
+                <input type="email" id="emailInput" name="emailInput" placeholder="Enter Email" style="display: none;">
+                <input type="number" id="shiftHoursInput" name="shiftHoursInput" placeholder="Enter Shift Hours" style="display: none;">
+                <input type="text" id="toolsInput" name="toolsInput" placeholder="Enter Tools" style="display: none;">
+                <input type="number" id="minSalary" name="minSalary" placeholder="Minimum Salary" style="display: none;">
+                <input type="number" id="maxSalary" name="maxSalary" placeholder="Maximum Salary" style="display: none;">
+                <input type="text" id="labIDInput" name="labIDInput" placeholder="Enter Lab ID" style="display: none;">
+                <input type="text" id="technicianIdInput" name="technicianIdInput" placeholder="Enter Technician ID" style="display: none;">
+                <input type="number" id="salaryInput" name="salaryInput" step="0.01" placeholder="Enter Salary" style="display: none;">
+
+                <button type="submit">Search</button>
+            </div>
+        </form>
+
+        <br><br><br>
+
+        <table id="labTechniciansTable" style="display: {{ 'table' if search_criteria != 'search_lab_room' else 'none' }};">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Phone Number</th>
+                    <th>Salary</th>
+                    <th>Visits Number</th>
+                    <th>Email</th>
+                    <th>Shift Hours</th>
+                    <th>Tools</th>
+                    <th>Lab ID</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% if technicians %}
+                {% for technician in technicians %}
+                <tr>
+                    <td>{{ technician[0] }}</td>
+                    <td>{{ technician[1] }}</td>
+                    <td>{{ technician[2] }}</td>
+                    <td>{{ technician[3] }}</td>
+                    <td>{{ technician[4] }}</td>
+                    <td>{{ technician[5] }}</td>
+                    <td>{{ technician[6] }}</td>
+                    <td>{{ technician[7] }}</td>
+                    <td>{{ technician[8] }}</td>
+                </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="9">No matching results found</td>
+                </tr>
+            {% endif %}
+            </tbody>
+        </table>
+
+        <table id="labRoomsTable" style="display: {{ 'table' if search_criteria == 'search_lab_room' else 'none' }};">
+            <thead>
+                <tr>
+                    <th>Lab ID</th>
+                    <th>Test ID</th>
+                    <th>Availability Status</th>
+                    <th>Special Requirements</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% if lab_rooms %}
+                {% for room in lab_rooms %}
+                <tr>
+                    <td>{{ room[0] }}</td>
+                    <td>{{ room[1] }}</td>
+                    <td>{{ room[2] }}</td>
+                    <td>{{ room[3] }}</td>
+                </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="4">No matching results found</td>
+                </tr>
+            {% endif %}
+            </tbody>
+        </table>
+
+        <button class="archived-button" onclick="window.location.href='/dismissedTech'">Archived Technicians</button>
+    </div>
+
+    <script>
+        function showTotalSalary() {
+            $.ajax({
+                url: '/get_salary_stats',
+                type: 'GET',
+                success: function(response) {
+                    var salaryResults = document.getElementById('salaryResults');
+                    salaryResults.innerHTML = '<p>Total Salary: ' + response.salary_sum + '</p><p>Average Salary: ' + response.salary_avg + '</p>';
+                },
+                error: function(error) {
+                    console.error('Error fetching salary stats:', error);
+                }
+            });
+        }
+
+        // Show salary stats when totalSalaryForm is displayed
+        document.getElementById('actionSelect').addEventListener('change', function() {
+            if (this.value === 'totalSalary') {
+                showTotalSalary();
+            }
+        });
+    </script>
+
+
+
+
+<div class="side-nav">
+  <ul>
+
+
+   <a href="{{ url_for('home') }}">
+    <li>
+      <img src="../static/images/home.png" />
+      <p>Home</p>
+    </li>
+    </a>
+    <!--**************************************************************-->
+
+    <a href="{{ url_for('memberships') }}">
+    <li>
+      <img src="../static/images/membership.png" />
+      <p>Membership</p>
+    </li>
+    </a>
+    <!--**************************************************************-->
+      <a href="{{ url_for('patients') }}">
+    <li>
+      <img src="../static/images/patient.png" />
+      <p >Patients</p>
+    </li>
+    </a>
+    <!--**************************************************************-->
+      <a href="{{ url_for('inBody') }}">
+
+      <li>
+        <img src="../static/images/person.png" />
+        <p>InbodyTest</p>
+      </li>
+    </a>
+    <!--**************************************************************-->
+
+    <a href="{{ url_for('medicalTest') }}">
+    <li>
+      <img src="../static/images/blood-tube (1).png" />
+      <p>Medical Test</p>
+    </li>
+      </a>
+
+
+      <!--**************************************************************-->
+
+
+       <a href="{{ url_for('salary') }}">
+      <li>
+        <img src="../static/images/medical-team (1).png" />
+        <p>Nutritionist</p>
+      </li>
+    </a>
+    <!--**************************************************************-->
+    <a href="{{ url_for('checkuproom') }}">
+    <li>
+      <img src="../static/images/exam-room.png" />
+      <p>Check-Up Room</p>
+    </li>
+      </a>
+    <!--**************************************************************-->
+
+
+       <a href="{{ url_for('laboratoryRoom') }}">
+    <li>
+      <img src="../static/images/flask.png" />
+      <p>Laboratory Room</p>
+    </li>
+      </a>
+
+      <a href="{{ url_for('statistics') }}">
+                <li>
+                    <img src="../static/images/analytics.png" />
+                    <p>Statistics</p>
+                </li>
+      </a>
+  <!--**************************************************************-->
+      <a href="{{ url_for('diets') }}">
+    <li>
+      <img src="../static/images/diet (1).png" />
+      <p>Diet</p>
+    </li>
+      </a>
+
+
+      <a href="{{ url_for('past') }}">
+    <li>
+      <img src="../static/images/delete-user.png" />
+      <p>Past Records</p>
+    </li>
+      </a>
+
+  </ul>
+
+  <!--**************************************************************-->
+
+</div>
+
+</body>
+</html>

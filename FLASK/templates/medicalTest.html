@@ -1,0 +1,719 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Test Management</title>
+    <style>
+        body {
+            background-color: #F3EDE3;
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            color: rgba(5, 60, 88, 0.78);
+        }
+        .content {
+            padding: 20px;
+        }
+        h1 {
+            color:rgba(5, 60, 88, 0.78) ;
+        }
+        .search-container, .action-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            margin-right: 10px;
+            font-size: 16px;
+        }
+        .form-group select, .form-group input {
+            padding: 10px;
+            border: 1px solid #EDE0D4;
+            border-radius: 25px;
+            appearance: none;
+            width: 220px;
+            margin-right: 10px;
+            transition: all 0.3s ease;
+        }
+        .form-group select:focus, .form-group input:focus {
+            outline: none;
+            border-color: rgba(5, 60, 88, 0.78);
+            box-shadow: 0 0 10px rgba(5, 60, 88, 0.78);
+        }
+        .search-container button, .form-container button {
+            background-color: rgba(5, 60, 88, 0.78);
+            color: #FFF;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .search-container button:hover, .form-container button:hover {
+            background-color:rgba(5, 60, 88, 0.78);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid white;
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: rgba(12, 93, 130, 0.78);
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: white;
+        }
+        tr:nth-child(odd) {
+            background-color:rgba(196, 224, 236, 0.78);
+        }
+        .hidden {
+            display: none;
+        }
+        .alert-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1050;
+        }
+        .alert {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+        .alert.show {
+            display: block;
+            opacity: 1;
+        }
+        .form-container {
+            background-color: #FFF;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        .form-container h2 {
+            margin-bottom: 20px;
+        }
+        .form-container label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 16px;
+        }
+        .form-container input[type="text"] {
+            width: calc(100% - 10px);
+            padding: 5px;
+            margin-bottom: 10px;
+            border: 1px solid #DDD;
+            border-radius: 5px;
+        }
+
+        .action-buttons button {
+            background-color: rgba(5, 60, 88, 0.78);
+            color: #FFF;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 25px;
+            transition: background-color 0.3s;
+        }
+        .action-buttons button:hover {
+            background-color: rgba(131, 179, 201, 0.78);
+        }
+    </style>
+
+
+<style>
+    .side-nav {
+        width: 100%;
+        height: 100px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        padding: 15px 30px;
+        background: rgba(206, 238, 253, 0.78);
+        backdrop-filter: blur(5px);
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        transition: height 0.3s;
+        z-index: 1000;
+        overflow-x: hidden; /* Hide the horizontal scrollbar */
+    }
+
+    .side-nav:hover {
+        height: 120px;
+    }
+
+    .side-nav:hover ul li p {
+        max-height: 130px;
+    }
+
+    .side-nav:hover ul li img {
+        margin-bottom: 10px;
+    }
+
+    .side-nav:hover ul li {
+        justify-content: center;
+    }
+
+    ul {
+        list-style: none;
+        padding: 0;
+        display: flex;
+        flex-direction: row;
+        margin: 0;
+        width: 100%;
+        overflow-x: scroll; /* Enable horizontal scrolling */
+        -ms-overflow-style: none;  /* Internet Explorer 10+ */
+        scrollbar-width: none;  /* Firefox */
+    }
+
+    ul::-webkit-scrollbar {
+        display: none;  /* Safari and Chrome */
+    }
+
+    ul li {
+        margin: 0 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        flex-direction: column;
+    }
+
+    ul li img {
+        width: 30px;
+        margin-bottom: 0;
+        transition: margin-bottom 0.3s;
+    }
+
+    ul li p {
+        white-space: nowrap;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s;
+    }
+
+    ul a {
+        text-decoration: none;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .side-nav {
+            height: auto;
+            padding: 10px 20px;
+            flex-direction: row;
+        }
+
+        ul {
+            flex-direction: row;
+            align-items: center;
+            overflow-x: scroll; /* Enable horizontal scrolling on small screens */
+            white-space: nowrap; /* Ensure items do not wrap */
+        }
+
+        ul li {
+            margin: 15px;
+        }
+
+        .side-nav:hover {
+            height: auto;
+        }
+    }
+
+    p{
+        color: rgba(5, 43, 62, 0.78);
+    }
+</style>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function showForm(action) {
+            document.getElementById('insertForm').classList.add('hidden');
+            document.getElementById('updateForm').classList.add('hidden');
+
+            if (action === 'insert') {
+                document.getElementById('insertForm').classList.remove('hidden');
+            } else if (action === 'update') {
+                document.getElementById('updateForm').classList.remove('hidden');
+            }
+        }
+
+        $(document).ready(function() {
+            // Show alerts with animation
+            $('.alert').addClass('show');
+
+            // Automatically hide alerts after 5 seconds
+            setTimeout(function() {
+                $('.alert').removeClass('show');
+                setTimeout(function() {
+                    $('.alert').alert('close');
+                }, 500);
+            }, 5000);
+
+            // Clear table contents
+            function clearTables() {
+                $('#medicalTestTable tbody').empty();
+                $('#testPatientCountTable tbody').empty();
+                $('#datesTable tbody').empty();
+                $('#laboratoryRoomsTable tbody').empty();
+                $('#patientsByTestTable tbody').empty();
+                $('#oneDayLeftTable tbody').empty();
+            }
+
+            // Show input field when criteria changes
+            function showInputField() {
+                clearTables();
+                var selectedCriteria = document.getElementById("searchCriteria").value;
+                var inputFields = document.querySelectorAll('.search-container input');
+                var medicalTestTable = document.getElementById('medicalTestTable');
+                var testPatientCountTable = document.getElementById('testPatientCountTable');
+                var datesTable = document.getElementById('datesTable');
+                var laboratoryRoomsTable = document.getElementById('laboratoryRoomsTable');
+                var patientsByTestTable = document.getElementById('patientsByTestTable');
+                var oneDayLeftTable = document.getElementById('oneDayLeftTable');
+
+                // Hide all tables
+                medicalTestTable.style.display = "none";
+                testPatientCountTable.style.display = "none";
+                datesTable.style.display = "none";
+                laboratoryRoomsTable.style.display = "none";
+                patientsByTestTable.style.display = "none";
+                oneDayLeftTable.style.display = "none";
+
+                inputFields.forEach(function(inputField) {
+                    inputField.style.display = "none";
+                });
+
+                if (selectedCriteria === "test_id") {
+                    document.getElementById("testIDInput").style.display = "block";
+                    medicalTestTable.style.display = "table";
+                } else if (selectedCriteria === "testType") {
+                    document.getElementById("testTypeInput").style.display = "block";
+                    medicalTestTable.style.display = "table";
+                } else if (selectedCriteria === "date_last_taken") {
+                    document.getElementById("dateLastTakenInput").style.display = "block";
+                    datesTable.style.display = "table";
+                } else if (selectedCriteria === "next_date_to_take") {
+                    document.getElementById("nextDateToTakeInput").style.display = "block";
+                    datesTable.style.display = "table";
+                } else if (selectedCriteria === "test_patient_count") {
+                    testPatientCountTable.style.display = "table";
+                } else if (selectedCriteria === "laboratory_rooms_by_test") {
+                    document.getElementById("testIDInput").style.display = "block";
+                    laboratoryRoomsTable.style.display = "table";
+                } else if (selectedCriteria === "patients_by_test_id") {
+                    document.getElementById("testIDInput").style.display = "block";
+                    patientsByTestTable.style.display = "table";
+                } else if (selectedCriteria === "one_day_left") {
+                    oneDayLeftTable.style.display = "table";
+                } else if (selectedCriteria === "select_all") {
+                    medicalTestTable.style.display = "table";  // Display all medical tests
+                } else {
+                    medicalTestTable.style.display = "table";  // Default display
+                }
+            }
+
+
+
+            // Event listener for search criteria change
+            document.getElementById("searchCriteria").addEventListener("change", showInputField);
+        });
+    </script>
+</head>
+
+
+<body   style="background-color:rgba(234, 246, 252, 0.78)">
+
+
+
+    <div class="content">
+
+        <div class="alert-container">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        </div>
+
+
+
+        <br>
+        <br>
+        <br>
+
+        <h1 style="font-size: 40px ; color: rgba(2, 27, 39, 0.78)">
+            <br><br>  <br>Manage Medical Tests</h1>
+
+
+
+
+
+
+        <form id="menuForm">
+            <div class="form-group action-container">
+                <label for="actionSelect" style=" color:rgba(5, 60, 88, 0.78);font-weight: bold; font-size: larger;">Select Action:</label>
+                <select id="actionSelect" name="actionSelect" onchange="showForm(this.value)">
+                    <option value="" style="background-color:  rgba(186, 224, 243, 0.78);width: 200px ; height: 40px">--Select Action--</option>
+                    <option value="insert" style="background-color: rgba(216, 234, 243, 0.78);width: 200px ; height: 40px">Insert Medical Test</option>
+                    <option value="update" style="background-color:  rgba(186, 224, 243, 0.78);width: 200px ; height: 40px">Update Medical Test</option>
+                </select>
+            </div>
+        </form>
+
+
+
+
+        <form id="insertForm" action="/add_medicalTest" method="post" class="form-container hidden">
+            <h2>Insert Medical Test</h2>
+            <label for="testType">Test Type:</label>
+            <input type="text" id="testType" name="testType" required>
+            <button type="submit">Insert</button>
+        </form>
+
+
+        <form id="updateForm" action="/update_medicalTest" method="POST" class="form-container hidden">
+            <h2>Update Medical Test</h2>
+            <label for="testID">Test ID:</label>
+            <input type="text" id="testID" name="test_id" required>
+
+            <label for="testType">Test Type:</label>
+            <input type="text" id="testType" name="test_type">
+
+            <button type="submit">Update</button>
+        </form>
+
+
+        <h1 style="font-size: 40px ; color: rgba(2, 27, 39, 0.78)">Search Medical Tests</h1>
+        <form action="/search_medicalTest" method="post">
+            <div class="form-group search-container">
+                <label for="searchCriteria" style=" color:rgba(5, 60, 88, 0.78);font-weight: bold; font-size: larger;">Select Search Criteria:</label>
+                <select id="searchCriteria" name="searchCriteria">
+                    <option value="" style="background-color:  rgba(186, 224, 243, 0.78);width: 200px ; height: 40px">--Select Search Criteria--</option>
+                    <option value="test_id"   style="background-color: rgba(216, 234, 243, 0.78);width: 200px ; height: 40px">Search by Test ID</option>
+                    <option value="testType" style="background-color:  rgba(186, 224, 243, 0.78);width: 200px ; height: 40px">Search by Test Type</option>
+                    <option value="date_last_taken"   style="background-color: rgba(216, 234, 243, 0.78);width: 200px ; height: 40px">Search by Date Last Taken</option>
+                    <option value="next_date_to_take" style="background-color:  rgba(186, 224, 243, 0.78);width: 200px ; height: 40px">Search by Next Date to Take</option>
+                    <option value="test_patient_count"   style="background-color: rgba(216, 234, 243, 0.78);width: 200px ; height: 40px">Test Patient Count</option>
+                    <option value="laboratory_rooms_by_test" style="background-color:  rgba(186, 224, 243, 0.78);width: 200px ; height: 40px">Laboratory Rooms by Test</option>
+                    <option value="patients_by_test_id"   style="background-color: rgba(216, 234, 243, 0.78);width: 200px ; height: 40px">Patients by Test ID</option>
+                    <option value="one_day_left" style="background-color:  rgba(186, 224, 243, 0.78);width: 200px ; height: 40px">Patients with Expired Tests</option>
+                    <option value="select_all"   style="background-color: rgba(216, 234, 243, 0.78);width: 200px ; height: 40px">Select All Medical Tests</option> <!-- Added new option -->
+                </select>
+
+                <input type="text" id="testIDInput" name="testIDInput" placeholder="Enter Test ID" style="display: none;">
+                <input type="text" id="testTypeInput" name="testTypeInput" placeholder="Enter Test Type" style="display: none;">
+                <input type="text" id="dateLastTakenInput" name="date_last_takenInput" placeholder="Enter Date Last Taken" style="display: none;">
+                <input type="text" id="nextDateToTakeInput" name="next_date_to_takeInput" placeholder="Enter Next Date to Take" style="display: none;">
+
+                <button type="submit">Search</button>
+            </div>
+        </form>
+
+
+
+        <!-- Table for test_patient_count -->
+        <table id="testPatientCountTable" style="display: {{ 'table' if search_criteria == 'test_patient_count' else 'none' }};">
+            <thead>
+                <tr>
+                    <th>Test ID</th>
+                    <th>Test Type</th>
+                    <th>Patient Count</th>
+                    <th>Lab ID</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if results %}
+                    {% for row in results %}
+                        <tr>
+                            <td>{{ row[0] }}</td>
+                            <td>{{ row[1] }}</td>
+                            <td>{{ row[2] }}</td>
+                            <td>{{ row[3] }}</td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="4">No matching results found</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+
+        <!-- Table for date_last_taken and next_date_to_take criteria -->
+        <table id="datesTable" style="display: {{ 'table' if search_criteria == 'date_last_taken' or search_criteria == 'next_date_to_take' else 'none' }};">
+            <thead>
+                <tr>
+                    <th>Test ID</th>
+                    <th>Test Type</th>
+                    <th>Patient ID</th>
+                    <th>Patient Name</th>
+                    <th>Date Taken</th>
+                    <th>Next Date to Take</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if results %}
+                    {% for row in results %}
+                        <tr>
+                            <td>{{ row[0] }}</td>
+                            <td>{{ row[1] }}</td>
+                            <td>{{ row[2] }}</td>
+                            <td>{{ row[3] }} {{ row[4] }}</td> <!-- Combined row[3] and row[4] -->
+                            <td>{{ row[5] }}</td>
+                            <td>{{ row[6] }}</td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="6">No matching results found</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+
+        <!-- Table for laboratory_rooms_by_test -->
+        <table id="laboratoryRoomsTable" style="display: {{ 'table' if search_criteria == 'laboratory_rooms_by_test' else 'none' }};">
+            <thead>
+                <tr>
+                    <th>Lab ID</th>
+                    <th>Availability Status</th>
+                    <th>Special Requirements</th>
+                    <th>Test Type</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if results %}
+                    {% for row in results %}
+                        <tr>
+                            <td>{{ row[0] }}</td>
+                            <td>{{ row[1] }}</td>
+                            <td>{{ row[2] }}</td>
+                            <td>{{ row[3] }}</td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="4">No matching results found</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+
+        <!-- Table for patients_by_test_id -->
+        <table id="patientsByTestTable" style="display: {{ 'table' if search_criteria == 'patients_by_test_id' else 'none' }};">
+            <thead>
+                <tr>
+                    <th>Patient ID</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Email</th>
+                    <th>Phone Number</th>
+                    <th>Age</th>
+                    <th>Diet ID</th>
+                    <th>Test Type</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if results %}
+                    {% for row in results %}
+                        <tr>
+                            <td>{{ row[0] }}</td>
+                            <td>{{ row[1] }}</td>
+                            <td>{{ row[2] }}</td>
+                            <td>{{ row[3] }}</td>
+                            <td>{{ row[4] }}</td>
+                            <td>{{ row[5] }}</td>
+                            <td>{{ row[6] }}</td>
+                            <td>{{ row[7] }}</td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="8">No matching results found</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+
+        <!-- Table for patients with one day left before test expiry -->
+        <table id="oneDayLeftTable" style="display: {{ 'table' if search_criteria == 'one_day_left' else 'none' }};">
+            <thead>
+                <tr>
+                    <th>Patient ID</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Email</th>
+                    <th>Phone Number</th>
+                    <th>Test Type</th>
+                    <th>Next Date to Take</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if results %}
+                    {% for row in results %}
+                        <tr>
+                            <td>{{ row[0] }}</td>
+                            <td>{{ row[1] }}</td>
+                            <td>{{ row[2] }}</td>
+                            <td>{{ row[3] }}</td>
+                            <td>{{ row[4] }}</td>
+                            <td>{{ row[5] }}</td>
+                            <td>{{ row[6] }}</td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="7">No matching results found</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+
+        <!-- Table for other search criteria -->
+        <table id="medicalTestTable" style="display: {{ 'table' if search_criteria in ['test_id', 'testType', 'select_all', ''] else 'none' }};">
+            <thead>
+                <tr>
+                    <th>Test ID</th>
+                    <th>Test Type</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if results %}
+                    {% for row in results %}
+                        <tr>
+                            <td>{{ row[0] }}</td>
+                            <td>{{ row[1] }}</td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="2">No matching results found</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+
+
+<div class="side-nav">
+  <ul>
+
+    <!--**************************************************************-->
+    <a href="{{ url_for('home') }}">
+    <li>
+      <img src="../static/images/home.png" />
+      <p>Home</p>
+    </li>
+    </a>
+    <!--**************************************************************-->
+
+    <a href="{{ url_for('memberships') }}">
+    <li>
+      <img src="../static/images/membership.png" />
+      <p>Membership</p>
+    </li>
+    </a>
+    <!--**************************************************************-->
+      <a href="{{ url_for('patients') }}">
+    <li>
+      <img src="../static/images/patient.png" />
+      <p >Patients</p>
+    </li>
+    </a>
+    <!--**************************************************************-->
+      <a href="{{ url_for('inBody') }}">
+
+      <li>
+        <img src="../static/images/person.png" />
+        <p>InbodyTest</p>
+      </li>
+    </a>
+    <!--**************************************************************-->
+
+
+
+      <a href="{{ url_for('statistics') }}">
+                          <li>
+                            <img src="../static/images/analytics.png" />
+                            <p>Statistics</p>
+                          </li>
+                            </a>
+      <!--**************************************************************-->
+
+
+       <a href="{{ url_for('salary') }}">
+      <li>
+        <img src="../static/images/medical-team (1).png" />
+        <p>Nutritionist</p>
+      </li>
+    </a>
+    <!--**************************************************************-->
+    <a href="{{ url_for('checkuproom') }}">
+    <li>
+      <img src="../static/images/exam-room.png" />
+      <p>Check-Up Room</p>
+    </li>
+      </a>
+    <!--**************************************************************-->
+    <a href="{{ url_for('lab_technician') }}">
+    <li>
+      <img src="../static/images/observation.png" />
+      <p>Lab Technician</p>
+    </li>
+      </a>
+
+       <a href="{{ url_for('laboratoryRoom') }}">
+    <li>
+      <img src="../static/images/flask.png" />
+      <p>Laboratory Room</p>
+    </li>
+      </a>
+  <!--**************************************************************-->
+     <a href="{{ url_for('diets') }}">
+    <li>
+      <img src="../static/images/diet (1).png" />
+      <p>Diet</p>
+    </li>
+      </a>
+
+      <a href="{{ url_for('past') }}">
+    <li>
+      <img src="../static/images/delete-user.png" />
+      <p>Past Records</p>
+    </li>
+      </a>
+
+
+
+  </ul>
+
+  <!--**************************************************************-->
+
+</div>
+
+
+
+      </body>
+      </html>

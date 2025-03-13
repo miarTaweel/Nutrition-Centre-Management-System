@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Archives</title>
+    <style>
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+
+        .no-memberships {
+            text-align: center;
+            color: rgba(2, 39, 57, 0.78);
+            padding: 20px;
+            font-size: 18px;
+        }
+        .select-inputs, .search-container, .update-form, .assign-form {
+            margin-top: 20px;
+            text-align: center;
+            display: none;
+        }
+        .select-inputs input, .update-form input, .assign-form input {
+            margin: 5px;
+            padding: 5px;
+            width: 150px;
+        }
+        .find-button-container {
+            text-align: center;
+        }
+        .find-button {
+            margin-top: 20px;
+        }
+
+        p {
+            color: rgba(2, 39, 57, 0.78);
+        }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: rgba(2, 39, 57, 0.78);
+        }
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px; /* Space between buttons */
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 20px 40px;
+            font-size: 10px;
+            background: transparent;
+            color: rgba(2, 39, 57, 0.78);
+            text-transform: uppercase;
+            border: 3px solid rgba(3, 60, 88, 0.78);
+            cursor: pointer;
+            transition: all 0.7s;
+            border-radius: 100px;
+            width: 120px;
+            height: 50px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        button:hover {
+            background-color: rgba(145, 212, 245, 0.78);
+        }
+
+        .error-message {
+            color: rgba(3, 60, 88, 0.78);
+            text-align: center;
+        }
+        .flash-message {
+            color: rgba(3, 60, 88, 0.78);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .side-nav {
+            width: 100%;
+            height: 100px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: 15px 30px;
+            background: rgba(206, 238, 253, 0.78);
+            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            transition: height 0.3s;
+            z-index: 1000;
+            overflow-x: hidden;
+        }
+
+        .side-nav:hover {
+            height: 120px;
+        }
+
+        .side-nav:hover ul li p {
+            max-height: 130px;
+        }
+
+        .side-nav:hover ul li img {
+            margin-bottom: 10px;
+        }
+
+        .side-nav:hover ul li {
+            justify-content: center;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            flex-direction: row;
+            margin: 0;
+            width: 100%;
+            overflow-x: scroll;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        ul::-webkit-scrollbar {
+            display: none;
+        }
+
+        ul li {
+            margin: 0 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-direction: column;
+        }
+
+        ul li img {
+            width: 30px;
+            margin-bottom: 0;
+            transition: margin-bottom 0.3s;
+        }
+
+        ul li p {
+            white-space: nowrap;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s;
+        }
+
+        ul a {
+            text-decoration: none;
+        }
+
+        @media (max-width: 768px) {
+            .side-nav {
+                height: auto;
+                padding: 10px 20px;
+                flex-direction: row;
+            }
+
+            ul {
+                flex-direction: row;
+                align-items: center;
+                overflow-x: scroll;
+                white-space: nowrap;
+            }
+
+            ul li {
+                margin: 15px;
+            }
+
+            .side-nav:hover {
+                height: auto;
+            }
+        }
+
+        main {
+            margin-top: 150px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .Insert {
+            padding-top: 20px;
+            align-items: center;
+        }
+
+        .Insert label {
+            width: 200px;
+            text-align: right;
+            color: rgba(169, 217, 241, 0.78);
+        }
+        .Insert input {
+            color: rgba(3, 47, 69, 0.78);
+            border-radius: 12px;
+            outline: none;
+            background: rgba(198, 229, 244, 0.78);
+            border: 2px solid rgba(3, 47, 69, 0.78);
+            padding-top: 3px;
+            padding-bottom: 3px;
+        }
+        .Insert input[type="text"] {
+            padding-left: 5px;
+        }
+        .Insert button {
+            border: none;
+            background: none;
+            padding: 0;
+            margin: 0;
+            cursor: pointer;
+        }
+        .Insert img {
+            width: 35px;
+            padding-left: 5px;
+            padding-bottom: 7px;
+        }
+        .input-group_first_row {
+            margin-bottom: 3px;
+        }
+        .input-group_second_row {
+            padding-left: 40px;
+        }
+
+        .Search_label {
+            color: rgba(3, 47, 69, 0.78);
+            padding-left: 210px;
+        }
+        .header .Search_label,
+        .header .patient_p,
+        .header .patient_h,
+        .header .dropbtn {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<main>
+    <h1>Archives</h1>
+    <div class="button-group">
+        <button onclick="window.location.href='/pastPatients'">Patients</button>
+        <button onclick="window.location.href='/dismissedNutri'">Nutritionists</button>
+        <button onclick="window.location.href='/dismissedTech'">Lab Technicians</button>
+    </div>
+</main>
+
+<div class="side-nav">
+    <ul>
+        <a href="{{ url_for('home') }}">
+            <li>
+                <img src="../static/images/home.png" />
+                <p>Home</p>
+            </li>
+        </a>
+        <a href="{{ url_for('memberships') }}">
+            <li>
+                <img src="../static/images/membership.png" />
+                <p>Membership</p>
+            </li>
+        </a>
+        <a href="{{ url_for('patients') }}">
+            <li>
+                <img src="../static/images/patient.png" />
+                <p>Patients</p>
+            </li>
+        </a>
+        <a href="{{ url_for('inBody') }}">
+            <li>
+                <img src="../static/images/person.png" />
+                <p>InbodyTest</p>
+            </li>
+        </a>
+        <a href="{{ url_for('medicalTest') }}">
+            <li>
+                <img src="../static/images/blood-tube (1).png" />
+                <p>Medical Test</p>
+            </li>
+        </a>
+        <a href="{{ url_for('salary') }}">
+            <li>
+                <img src="../static/images/medical-team (1).png" />
+                <p>Nutritionist</p>
+            </li>
+        </a>
+        <a href="{{ url_for('checkuproom') }}">
+            <li>
+                <img src="../static/images/exam-room.png" />
+                <p>Check-Up Room</p>
+            </li>
+        </a>
+        <a href="{{ url_for('lab_technician') }}">
+            <li>
+                <img src="../static/images/observation.png" />
+                <p>Lab Technician</p>
+            </li>
+        </a>
+        <a href="{{ url_for('laboratoryRoom') }}">
+            <li>
+                <img src="../static/images/flask.png" />
+                <p>Laboratory Room</p>
+            </li>
+        </a>
+        <a href="{{ url_for('statistics') }}">
+            <li>
+                <img src="../static/images/analytics.png" />
+                <p>Statistics</p>
+            </li>
+        </a>
+        <a href="{{ url_for('diets') }}">
+            <li>
+                <img src="../static/images/diet (1).png" />
+                <p>Diet</p>
+            </li>
+        </a>
+
+    </ul>
+</div>
+
+</body>
+</html>
